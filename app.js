@@ -11,7 +11,7 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 // database setup
-var mongoDB = 'mongodb+srv://mimi:123@cluster0.wgcn9.mongodb.net/<dbname>?retryWrites=true&w=majority';
+var mongoDB = 'mongodb+srv://mimi:123@cluster0.wgcn9.mongodb.net/inventory?retryWrites=true&w=majority';
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -27,7 +27,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/category', categoryRouter);
+app.use('/item', itemRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
