@@ -16,13 +16,6 @@ html
             ul(class='sidebar-nav')
               li 
                 a(href='/') Home
-              - category_list.sort(function(a, b) {let textA = a.name.toUpperCase(); let textB = b.name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
-              each category in category_list
-                li 
-                  a(href=category.url) #{category.name} 
-                  
-              li 
-                hr
               li 
                 a(href='/category/create') Create new category
               li 
