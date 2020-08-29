@@ -1,11 +1,32 @@
 const Category = require('../models/category');
+const Item = require('../models/item');
 const async = require('async');
 const validator = require('express-validator');
 
 // Display detail page for a specific Category.
-exports.category_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category detail: ' + req.params.id);
-};
+exports.category_detail = function(req, res, next) {
+    console.log('id ' + req.params.id);
+    async.parallel({
+        category: function(callback) {
+            Category.findById(req.params.id)
+            .exec(callback)
+        },
+        category_items: function(callback) {
+            Item.find({'category': req.params.id})
+            .exec(callback)
+        } 
+    }, function(err, results) {
+        if (err){
+            return next(err);
+        }
+        if (results.category == null) {
+            let err = new Error('Category not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('category', {title: 'Category list', category: results.category, category_items: results.category_items});
+    }
+)};
 
 // Display Category create form on GET.
 exports.category_create_get = function(req, res) {
