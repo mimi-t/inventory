@@ -6,3 +6,9 @@ block content
   p #[strong Price: ]$#{ (Math.round(item.price * 100) / 100).toFixed(2) } | #[strong In stock:] #{item.stock}
   p #[strong Category: ] #{item.category.name}
   p= item.description
+
+  hr
+  p
+    a(href=item.url+'/update') Update item
+  p
+    a(href=item.url+'/delete') Delete item
