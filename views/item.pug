@@ -1,0 +1,8 @@
+extends layout
+
+block content
+
+  h1= item.name
+  p #[strong Price: ]$#{ (Math.round(item.price * 100) / 100).toFixed(2) } | #[strong In stock:] #{item.stock}
+  p #[strong Category: ] #{item.category.name}
+  p= item.description
