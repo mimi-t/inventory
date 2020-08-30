@@ -4,11 +4,11 @@ block content
   h1= title
 
   form(method='POST' action='')
-    div.form-group
-      label(for='category_name') Name:
+    .form-group
+      label(for='category_name') Name
       input#category_name.form-control(type='text' name='category_name' required='true' value=(category==undefined ? '' : category.name))
-    div.form-group
-      label(for='category_desc') Description:
+    .form-group
+      label(for='category_desc') Description
       textarea#category_description.form-control(name='category_desc' rows='3' required='true' value=(category==undefined ? '' : category.description))
     button.btn.btn-primary(type='submit') Submit
 
