@@ -1,0 +1,32 @@
+extends layout
+block content
+
+  h1= title
+  form(method='POST' action='')
+    .form-group
+      label(for='item_name') Name
+      input#item_name.form-control(type='text' name='item_name' required='true' value=(item == undefined ? '' : item.name))
+    .form-group
+      label(for='item_desc') Description
+      textarea#item_desc.form-control(name='item_desc' rows='3' required='true' value=(item == undefined ? '' : item.description))
+    .form-group
+      label(for='item_category') Category
+      select#item_category.form-control(name='item_category' required='true')
+        //- if item exists then it is updating a form, make relevant option selected
+        for category in categories
+          if item
+            option(value=category._id selected=(item._id == category._id ? 'selected' : false)) #{category.name}
+          else
+            option(value=category._id) #{category.name}
+    .form-group
+      label(for='item_price') Price
+      input#item_price.form-control.currency(type='number' name='item_price' min='0' step='0.01' required='true' value=(item == undefined ? '' : item.price))
+    .form-group
+      label(for='item_stock') Stock
+      input#item_stock.form-control.currency(type='number' name='item_stock' min='0' step='1' required='true' value=(item == undefined ? '' : item.stock))
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
