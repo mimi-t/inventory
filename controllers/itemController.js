@@ -43,7 +43,18 @@ exports.item_create_post = function (req, res) {
 
 // Display Item delete form on GET.
 exports.item_delete_get = function (req, res) {
-    res.send('NOT IMPLEMENTED: Item delete GET');
+    Item.findById(req.params.id)
+        .exec(function (err, result) {
+            if (err) {
+                return next(err);
+            }
+            if (result == null) {
+                let err = new Error('Item not found');
+                err.status = 404
+                return next(err);
+            }
+            res.render('item_delete', { title: 'Delete Item', item: result })
+        })
 };
 
 // Handle Item delete on POST.
