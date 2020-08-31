@@ -1,8 +1,7 @@
 const Category = require('../models/category');
 const Item = require('../models/item');
 const async = require('async');
-const validator = require('express-validator');
-const category = require('../models/category');
+const { body, validationResult } = require('express-validator');
 
 // Display detail page for a specific Category.
 exports.category_detail = function (req, res, next) {
@@ -32,6 +31,7 @@ exports.category_detail = function (req, res, next) {
 
 // Display Category create form on GET.
 exports.category_create_get = function (req, res) {
+    //validate fields
     res.render('category_form', { title: 'Create Category' });
 };
 
