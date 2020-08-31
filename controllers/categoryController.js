@@ -36,9 +36,33 @@ exports.category_create_get = function (req, res) {
 };
 
 // Handle Category create on POST.
-exports.category_create_post = function (req, res) {
-    res.send('NOT IMPLEMENTED: Category create POST');
-};
+exports.category_create_post = [
+    // validate and sanitise 
+    body('category_name').trim().isLength({ min: 1 }).withMessage('Category name required.').escape(),
+    body('category_desc').trim().isLength({ min: 1 }).withMessage('Category description required.').escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        console.log(errors.array());
+        // if there are errors render the form again with sanitized values/errors messages
+        if (!errors.isEmpty()) {
+            res.render('category_form', { title: 'Create Category', category: req.body, errors: errors.array() });
+            return;
+        } else {
+            let new_category = new Category({
+                name: req.body.category_name, 
+                description: req.body.category_desc,
+            });
+            new_category.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                // Successful - redirect to new author record.
+                res.redirect(new_category.url);
+            });
+        }
+    }
+]
 
 // Display Category delete form on GET.
 exports.category_delete_get = function (req, res) {
