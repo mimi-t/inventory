@@ -1,7 +1,7 @@
 const Item = require('../models/item');
 const Category = require('../models/category');
 const async = require('async');
-const validator = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 // Display detail page for a specific Item.
 exports.item_detail = function (req, res, next) {
@@ -37,9 +37,48 @@ exports.item_create_get = function (req, res) {
 };
 
 // Handle Item create on POST.
-exports.item_create_post = function (req, res) {
-    res.send('NOT IMPLEMENTED: Item create POST');
-};
+exports.item_create_post = [
+    // validate and sanitise 
+    body('item_name').trim().isLength({ min: 1 }).withMessage('Item name required.').escape(),
+    body('item_desc').trim().isLength({ min: 1 }).withMessage('Item description required.').escape(),
+    body('item_price').isCurrency().withMessage('Item price is invalid.').toFloat(),
+    body('item_stock').isInt({ min: 0 }).withMessage('Item stock is invalid.').toInt(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        console.log(errors.array());
+        // if there are errors render the form again with sanitized values/errors messages
+        if (!errors.isEmpty()) {
+            Category.find()
+                .exec(function (err, result) {
+                    if (err) {
+                        return next(err);
+                    }
+                    if (result == null) {
+                        let err = new Error('Categories not found');
+                        err.status = 404;
+                        return next(err);
+                    }
+                    res.render('item_form', { title: 'Create Item', item: req.body, categories: result, errors: errors.array() });
+                });
+        } else {
+            let new_item = new Item({
+                name: req.body.item_name,
+                description: req.body.item_desc,
+                category: req.body.item_category,
+                price: req.body.item_price,
+                stock: req.body.item_stock,
+            });
+            new_item.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                // Successful - redirect to new author record.
+                res.redirect(new_item.url);
+            });
+        }
+    }
+]
 
 // Display Item delete form on GET.
 exports.item_delete_get = function (req, res) {
