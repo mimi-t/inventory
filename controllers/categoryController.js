@@ -57,7 +57,7 @@ exports.category_create_post = [
                 if (err) {
                     return next(err);
                 }
-                // Successful - redirect to new author record.
+                // Successful - redirect to new category.
                 res.redirect(new_category.url);
             });
         }
