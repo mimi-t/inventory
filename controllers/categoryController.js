@@ -100,7 +100,28 @@ exports.category_delete_get = function (req, res) {
 
 // Handle Category delete on POST.
 exports.category_delete_post = function (req, res) {
-    res.send('NOT IMPLEMENTED: Category delete POST');
+    async.parallel({
+        category: function (callback) {
+            Category.findById(req.params.id).exec(callback)
+        },
+        category_items: function (callback) {
+            Item.find({ 'category': req.params.id }).exec(callback)
+        },
+    }, function (err, result) {
+        if (err) {
+            return err;
+        }
+        if (result.category_items.length > 0) {
+            res.render('category_delete', { title: 'Delete Category', category: result.category, category_items: result.category_items });
+            return;
+        }
+        Category.findByIdAndDelete(req.body.category_id, function (err) {
+            if (err) {
+                return next(err);
+            }
+            res.render('message', { title: 'Successfully deleted', msg: 'The category has been successfully deleted!' })
+        });
+    });
 };
 
 // Display Category update form on GET.
