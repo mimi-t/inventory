@@ -8,7 +8,7 @@ block content
       input#item_name.form-control(type='text' name='item_name' required='true' value=(item == undefined ? '' : item.name))
     .form-group
       label(for='item_desc') Description
-      textarea#item_desc.form-control(name='item_desc' rows='3' required='true' value=(item == undefined ? '' : item.description))
+      textarea#item_desc.form-control(name='item_desc' rows='3' required='true') #{item == undefined ? '' : item.description}
     .form-group
       label(for='item_category') Category
       select#item_category.form-control(name='item_category' required='true')
