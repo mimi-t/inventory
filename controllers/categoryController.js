@@ -49,17 +49,27 @@ exports.category_create_post = [
             res.render('category_form', { title: 'Create Category', category: req.body, errors: errors.array() });
             return;
         } else {
-            let new_category = new Category({
-                name: req.body.category_name,
-                description: req.body.category_desc,
-            });
-            new_category.save(function (err) {
-                if (err) {
-                    return next(err);
-                }
-                // Successful - redirect to new category.
-                res.redirect(new_category.url);
-            });
+            Category.findOne({ 'name': req.body.category_name })
+                .exec(function (err, found_category) {
+                    if (err) {
+                        return next(err);
+                    }
+                    if (found_category) {
+                        res.redirect(found_category.url)
+                    } else {
+                        let new_category = new Category({
+                            name: req.body.category_name,
+                            description: req.body.category_desc,
+                        });
+                        new_category.save(function (err) {
+                            if (err) {
+                                return next(err);
+                            }
+                            // Successful - redirect to new category.
+                            res.redirect(new_category.url);
+                        });
+                    }
+                });
         }
     }
 ]
