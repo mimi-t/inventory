@@ -109,7 +109,12 @@ exports.item_delete_get = function (req, res) {
 
 // Handle Item delete on POST.
 exports.item_delete_post = function (req, res) {
-    res.send('NOT IMPLEMENTED: Item delete POST');
+    Item.findByIdAndDelete(req.body.item_id, function(err) {
+        if (err){
+            return next(err);
+        }
+        res.render('message', {title: 'Successfully deleted', msg: 'The item has been successfully deleted!'})
+    });
 };
 
 // Display Item update form on GET.
