@@ -50,7 +50,7 @@ exports.category_create_post = [
             return;
         } else {
             let new_category = new Category({
-                name: req.body.category_name, 
+                name: req.body.category_name,
                 description: req.body.category_desc,
             });
             new_category.save(function (err) {
@@ -95,7 +95,18 @@ exports.category_delete_post = function (req, res) {
 
 // Display Category update form on GET.
 exports.category_update_get = function (req, res) {
-    res.send('NOT IMPLEMENTED: Category update GET');
+    Category.findById(req.params.id)
+        .exec(function (err, result) {
+            if (err) {
+                return next(err);
+            }
+            if (result == null) {
+                let err = new Error('Category not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.render('category_form', { title: 'Update Category', category: result });
+        })
 };
 
 // Handle category update on POST.
