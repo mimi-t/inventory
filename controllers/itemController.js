@@ -62,20 +62,31 @@ exports.item_create_post = [
                     res.render('item_form', { title: 'Create Item', item: req.body, categories: result, errors: errors.array() });
                 });
         } else {
-            let new_item = new Item({
-                name: req.body.item_name,
-                description: req.body.item_desc,
-                category: req.body.item_category,
-                price: req.body.item_price,
-                stock: req.body.item_stock,
-            });
-            new_item.save(function (err) {
-                if (err) {
-                    return next(err);
-                }
-                // Successful - redirect to new author record.
-                res.redirect(new_item.url);
-            });
+            Item.findOne({ 'name': req.body.item_name })
+                .exec(function (err, found_item) {
+                    if (err) {
+                        return next(err);
+                    }
+                    if (found_item) {
+                        res.redirect(found_item.url)
+                    } else {
+                        let new_item = new Item({
+                            name: req.body.item_name,
+                            description: req.body.item_desc,
+                            category: req.body.item_category,
+                            price: req.body.item_price,
+                            stock: req.body.item_stock,
+                        });
+                        new_item.save(function (err) {
+                            if (err) {
+                                return next(err);
+                            }
+                            // Successful - redirect to new author record.
+                            res.redirect(new_item.url);
+                        });
+                    }
+                });
+
         }
     }
 ]
