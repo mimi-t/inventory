@@ -103,7 +103,27 @@ exports.item_delete_post = function (req, res) {
 
 // Display Item update form on GET.
 exports.item_update_get = function (req, res) {
-    res.send('NOT IMPLEMENTED: Item update GET');
+    async.parallel({
+        item: function(callback) {
+            Item.findById(req.params.id)
+            .populate('Category')
+            .exec(callback)
+        },
+        category: function(callback) {
+            Category.find()
+            .exec(callback)
+        }
+    }, function(err, result) {
+        if (err) {
+            return next(err);
+        }
+        if (result.item == null) {
+            let err = new Error('Item not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('item_form', {title: 'Update Item', item: result.item, categories: result.category});
+    })
 };
 
 // Handle item update on POST.
