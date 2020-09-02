@@ -108,27 +108,27 @@ exports.item_delete_get = function (req, res) {
 
 // Handle Item delete on POST.
 exports.item_delete_post = function (req, res) {
-    Item.findByIdAndDelete(req.body.item_id, function(err) {
-        if (err){
+    Item.findByIdAndDelete(req.body.item_id, function (err) {
+        if (err) {
             return next(err);
         }
-        res.render('message', {title: 'Successfully deleted', msg: 'The item has been successfully deleted!'})
+        res.render('message', { title: 'Successfully deleted', msg: 'The item has been successfully deleted!' })
     });
 };
 
 // Display Item update form on GET.
 exports.item_update_get = function (req, res) {
     async.parallel({
-        item: function(callback) {
+        item: function (callback) {
             Item.findById(req.params.id)
-            .populate('Category')
-            .exec(callback)
+                .populate('Category')
+                .exec(callback)
         },
-        category: function(callback) {
+        category: function (callback) {
             Category.find()
-            .exec(callback)
+                .exec(callback)
         }
-    }, function(err, result) {
+    }, function (err, result) {
         if (err) {
             return next(err);
         }
@@ -137,7 +137,7 @@ exports.item_update_get = function (req, res) {
             err.status = 404;
             return next(err);
         }
-        res.render('item_form', {title: 'Update Item', item: result.item, categories: result.category});
+        res.render('item_form', { title: 'Update Item', item: result.item, categories: result.category });
     })
 };
 
@@ -146,7 +146,7 @@ exports.item_update_post = [
     // validate and sanitise 
     body('item_name').trim().isLength({ min: 1 }).withMessage('Item name required.').escape(),
     body('item_desc').trim().isLength({ min: 1 }).withMessage('Item description required.').escape(),
-    body('item_price').isCurrency().withMessage('Item price is invalid.').toFloat(),
+    body('item_price').isCurrency({ min: 0 }).withMessage('Item price is invalid.').toFloat(),
     body('item_stock').isInt({ min: 0 }).withMessage('Item stock is invalid.').toInt(),
 
     (req, res, next) => {
@@ -174,8 +174,8 @@ exports.item_update_post = [
                     res.render('item_form', { title: 'Update Item', item: new_item, categories: result, errors: errors.array() });
                 });
         } else {
-            Item.findByIdAndUpdate(req.params.id, new_item, {}, function(err, item) {
-                if (err){
+            Item.findByIdAndUpdate(req.params.id, new_item, {}, function (err, item) {
+                if (err) {
                     return next(err);
                 }
                 res.redirect(item.url);
