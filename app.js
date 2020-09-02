@@ -13,7 +13,7 @@ var app = express();
 
 // database setup
 var mongoDB = 'mongodb+srv://mimi:123@cluster0.wgcn9.mongodb.net/inventory?retryWrites=true&w=majority';
-mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});;
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -32,12 +32,12 @@ app.use('/category', categoryRouter);
 app.use('/item', itemRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
