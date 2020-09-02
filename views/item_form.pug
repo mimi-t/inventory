@@ -13,9 +13,10 @@ block content
       label(for='item_category') Category
       select#item_category.form-control(name='item_category' required='true')
         //- if item exists then it is updating a form, make relevant option selected
+        - categories.sort(function(a, b) {let textA = a.name.toUpperCase(); let textB = b.name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
         for category in categories
           if item
-            option(value=category._id selected=(item._id == category._id ? 'selected' : false)) #{category.name}
+            option(value=category._id selected=(item.category.toString() == category._id ? 'selected' : false)) #{category.name}
           else
             option(value=category._id) #{category.name}
     .form-group
