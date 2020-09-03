@@ -4,12 +4,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var compression = require('compression');
+var helmet = require('helmet');
 
 var indexRouter = require('./routes/index');
 var categoryRouter = require('./routes/category');
 var itemRouter = require('./routes/item');
 
 var app = express();
+
+app.use(compression()); //Compress all routes
+app.use(helmet());
 
 // database setup
 var mongoDB = 'mongodb+srv://mimi:123@cluster0.wgcn9.mongodb.net/inventory?retryWrites=true&w=majority';
