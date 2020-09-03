@@ -17,7 +17,8 @@ app.use(compression()); //Compress all routes
 app.use(helmet());
 
 // database setup
-var mongoDB = 'mongodb+srv://mimi:123@cluster0.wgcn9.mongodb.net/inventory?retryWrites=true&w=majority';
+var dev_db_url = 'mongodb+srv://mimi:123@cluster0.wgcn9.mongodb.net/inventory?retryWrites=true&w=majority';
+var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
